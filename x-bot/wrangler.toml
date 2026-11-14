@@ -1,0 +1,12 @@
+name = "sky-x-bot"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "SKY_X"
+id = "5d32cb1539d840bb824e07cbe7d0d0e9"
+
+# 06:30 UTC = 08:30 Israel (winter) / 09:30 (summer): daily tweet ideas
+[triggers]
+crons = ["30 6 * * *"]

@@ -109,9 +109,25 @@ def tg_updates(offset):
     for u in data.get("result", []):
         new_offset = max(new_offset, u["update_id"] + 1)
         msg = u.get("message") or {}
-        if str(msg.get("chat", {}).get("id")) == env("TELEGRAM_CHAT_ID") and msg.get("text"):
+        if str(msg.get("chat", {}).get("id")) != env("TELEGRAM_CHAT_ID"):
+            continue
+        if msg.get("photo"):  # owner sent a ready image -> it goes to the queue
+            texts.append({"photo": msg["photo"][-1]["file_id"], "text": msg.get("caption", ""),
+                          "date": msg.get("date", 0)})
+        elif msg.get("document", {}).get("mime_type", "").startswith("image/"):
+            texts.append({"photo": msg["document"]["file_id"], "text": msg.get("caption", ""),
+                          "date": msg.get("date", 0)})
+        elif msg.get("text"):
             texts.append({"text": msg["text"], "date": msg.get("date", 0)})
     return texts, new_offset
+
+
+def tg_download(file_id, dest):
+    info = post_form(_tg("getFile"), {"file_id": file_id})["result"]
+    data = http(f"https://api.telegram.org/file/bot{env('TELEGRAM_BOT_TOKEN')}/{info['file_path']}")
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_bytes(data)
+    return dest
 
 
 # ======================= Meta =======================

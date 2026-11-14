@@ -5,5 +5,7 @@
     "facebook": true,
     "instagram": false,
     "threads": false
-  }
+  },
+  "approval_mode": true,
+  "approval_hours": 12
 }

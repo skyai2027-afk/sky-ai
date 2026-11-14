@@ -1,4 +1,5 @@
 """Decides what Sky posts, writes the caption + image prompt, and checks image quality."""
+import json
 import random
 
 from .services import gemini_json
@@ -59,6 +60,9 @@ Recent posts — do NOT repeat these scenes, places or jokes:
 
 Rules:
 - Never invent real match scores, results or news. Only use facts the owner gave above.
+- Do NOT imply that a real match is happening today/tonight unless the owner said so. Without owner info, sports
+  posts are about HER doing sport (tennis, beach volleyball, shooting hoops, running) or general fan life
+  (wearing the shirt on a normal day, a jersey on the chair), never "watching the game now".
 - No real people in the picture, no logos, no team crests. Fans wear plain blue-red striped shirts without crests.
 - Captions are short, witty, slightly cynical, warm underneath (see persona tone). 1-3 sentences each.
 - English caption first; the Hebrew caption is natural Hebrew, not a word-for-word translation.
@@ -82,6 +86,47 @@ Return JSON with exactly these keys:
     return post
 
 
+def caption_for_image(image_path, history, notes="", owner_messages=()):
+    """For a photo the owner made himself: look at it and write the caption."""
+    recent = "\n".join(f"- {h['date']}: {h.get('scene', '')}" for h in history[-10:]) or "(none yet)"
+    msgs = "\n".join(f"- {m}" for m in owner_messages) or "(none)"
+    prompt = f"""You write Instagram captions for an AI-generated virtual influencer. Her persona bible:
+<persona>
+{persona()}
+</persona>
+The attached photo will be posted as-is. Look at it carefully and write the caption for THIS photo.
+Owner's note about it: {notes or "(none)"}
+Recent owner messages: {msgs}
+Recent posts (do not repeat their jokes): {recent}
+Rules: short, witty, slightly cynical, warm. English first, then natural Hebrew (not a literal translation).
+Max 1-2 emojis per language. Never invent facts (scores, news). Do not mention real businesses by name
+even if a sign is visible. 5-8 hashtags incl. #AIgenerated and #virtualinfluencer, no #love/#instagood.
+Return JSON: {{"pillar": "sports|food|travel|fashion|fitness", "scene": "one short English line describing the photo",
+ "caption_en": "...", "caption_he": "...", "hashtags": ["#.."]}}"""
+    post = gemini_json(prompt, images=[image_path])
+    tags = [t if t.startswith("#") else "#" + t for t in post.get("hashtags", [])]
+    for must in ("#AIgenerated", "#virtualinfluencer"):
+        if must.lower() not in [t.lower() for t in tags]:
+            tags.append(must)
+    post["hashtags"] = tags[:9]
+    return post
+
+
+def revise_caption(post, feedback):
+    """Rewrite the caption following the owner's feedback (Hebrew or English)."""
+    prompt = f"""Rewrite this Instagram caption of the virtual influencer Sky Fiori following the owner's feedback.
+Persona: witty, slightly cynical, warm, 24, Tel Aviv. English caption first, natural Hebrew second.
+Current: {json.dumps({k: post.get(k) for k in ("caption_en", "caption_he", "hashtags")}, ensure_ascii=False)}
+Owner's feedback: "{feedback}"
+Keep #AIgenerated and #virtualinfluencer. Return JSON: {{"caption_en": "...", "caption_he": "...", "hashtags": ["#.."]}}"""
+    new = gemini_json(prompt)
+    out = {**post, **{k: new[k] for k in ("caption_en", "caption_he", "hashtags") if k in new}}
+    for must in ("#AIgenerated", "#virtualinfluencer"):
+        if must.lower() not in [t.lower() for t in out["hashtags"]]:
+            out["hashtags"].append(must)
+    return out
+
+
 def caption_text(post):
     return f"{post['caption_en']}\n\n{post['caption_he']}\n\n{' '.join(post['hashtags'])}"
 
@@ -89,19 +134,24 @@ def caption_text(post):
 def check_image(image_path):
     """Gemini compares the new image with Sky's reference photos. Returns (ok, report)."""
     prompt = """The first two images are reference photos of a fictional character called Sky.
+Her identity markers: MANY visible freckles across nose and cheeks, soft ROUNDED face, light green eyes,
+light honey-brown (not blonde, not red, not dark) shoulder-length hair, warm wide smile.
 The LAST image is a newly generated photo that is supposed to show the same person.
-Judge it strictly, like a photo editor before publishing to Instagram. Return JSON:
-{"same_person": true/false (same face: freckles, face shape, eyes, hair color),
- "face_visible": true/false,
+You are a strict photo editor. A follower who knows Sky must instantly recognise her.
+Compare feature by feature. If the face is too small or blurry to verify the freckles and face shape, that is a FAIL.
+Return JSON:
+{"freckles_match": true/false, "face_shape_match": true/false, "hair_color_match": true/false,
+ "identity_score": 1-10 (10 = unmistakably the same person),
+ "face_visible": true/false (large and sharp enough to verify),
  "anatomy_ok": true/false (hands, fingers, limbs, eyes look natural),
  "logos_or_text": true/false (visible brand logos or garbled text),
  "looks_real": 1-10,
- "problems": ["short list"],
- "verdict": "pass" or "fail"}
-Verdict is "pass" only if same_person, face_visible and anatomy_ok are true, logos_or_text is false and looks_real >= 7."""
+ "problems": ["short list"]}"""
     rep = gemini_json(prompt, images=[*REFS, image_path])
-    ok = (rep.get("verdict") == "pass" and rep.get("same_person") and rep.get("anatomy_ok")
-          and not rep.get("logos_or_text"))
+    ok = (rep.get("freckles_match") and rep.get("face_shape_match") and rep.get("hair_color_match")
+          and (rep.get("identity_score") or 0) >= 7 and rep.get("face_visible") and rep.get("anatomy_ok")
+          and not rep.get("logos_or_text") and (rep.get("looks_real") or 0) >= 7)
+    rep["verdict"] = "pass" if ok else "fail"
     log("quality check:", "PASS" if ok else "FAIL", rep.get("problems"))
     return bool(ok), rep
 

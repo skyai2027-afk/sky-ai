@@ -2,7 +2,7 @@
 // It never posts to X itself: the owner copies and posts manually.
 
 const PERSONA_URL = "https://raw.githubusercontent.com/skyai2027-afk/sky-ai/main/persona.md";
-const MODELS = ["gemini-flash-latest", "gemini-3.8-flash", "gemini-3.5-flash", "gemini-flash-lite-latest"];
+const MODELS = ["gemini-3.5-flash", "gemini-flash-latest", "gemini-flash-lite-latest", "gemini-3.8-flash"];
 
 const HELP = `🐦 Sky X, רק בשביל X (טוויטר)
 אני מנסחת, אתה מפרסם ב-X ידנית.
@@ -27,11 +27,8 @@ export default {
     const last = Number((await env.SKY_X.get("last_update_id")) || 0);
     if (update.update_id && update.update_id <= last) return new Response("dup");
     if (update.update_id) await env.SKY_X.put("last_update_id", String(update.update_id));
-    try {
-      await handle(update, env);
-    } catch (e) {
-      await send(env, `❌ תקלה: ${String(e).slice(0, 300)}`);
-    }
+    // answer Telegram right away, keep working in the background
+    ctx.waitUntil(handle(update, env).catch((e) => send(env, `❌ תקלה: ${String(e).slice(0, 300)}`)));
     return new Response("ok");
   },
   async scheduled(event, env, ctx) {
@@ -101,7 +98,7 @@ async function gemini(env, prompt, { image = null, search = false } = {}) {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
         body: JSON.stringify(body),
-        signal: AbortSignal.timeout(30000),
+        signal: AbortSignal.timeout(12000),
       });
       if (!r.ok) throw new Error(`${model} ${r.status}: ${(await r.text()).slice(0, 150)}`);
       const d = await r.json();

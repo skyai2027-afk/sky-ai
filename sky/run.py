@@ -124,7 +124,8 @@ def cmd_post(test=False, image=None, note=""):
         image, note = str(ROOT / item["file"]), item.get("note", "")
     if image:  # owner's own photo: only write the caption
         img_path.write_bytes(open(image, "rb").read())
-        post = content.caption_for_image(img_path, history, note or notes, [m["text"] for m in fresh])
+        post = content.caption_for_image(img_path, history, note or notes, [])
+        fresh = []  # keep the owner's ideas for the next generated post
         ok, report = True, {}
         if queue and image == str(ROOT / queue[0]["file"]) and not test:
             (ROOT / queue[0]["file"]).unlink(missing_ok=True)

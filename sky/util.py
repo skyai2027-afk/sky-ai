@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 STATE = ROOT / "state"
 POSTS = ROOT / "docs" / "posts"
-REFS = [ROOT / "references" / "sky_face.jpg", ROOT / "references" / "sky_cafe.jpg"]
+REFS = [ROOT / "references" / n for n in ("ref_front_smile.jpg", "ref_three_quarter.jpg", "ref_body.jpg")]
 PAGES_BASE = "https://skyai2027-afk.github.io/sky-ai"
 RAW_BASE = "https://raw.githubusercontent.com/skyai2027-afk/sky-ai/main"
 

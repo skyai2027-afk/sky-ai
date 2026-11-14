@@ -133,9 +133,9 @@ def caption_text(post):
 
 def check_image(image_path):
     """Gemini compares the new image with Sky's reference photos. Returns (ok, report)."""
-    prompt = """The first two images are reference photos of a fictional character called Sky.
+    prompt = """All images except the LAST one are reference photos of a fictional character called Sky.
 Her identity markers: MANY visible freckles across nose and cheeks, soft ROUNDED face, light green eyes,
-light honey-brown (not blonde, not red, not dark) shoulder-length hair, warm wide smile.
+golden honey-brown shoulder-length wavy hair (may look lighter in sun or tied in a bun; not red, not dark), warm wide smile.
 The LAST image is a newly generated photo that is supposed to show the same person.
 You are a strict photo editor. A follower who knows Sky must instantly recognise her.
 Compare feature by feature. If the face is too small or blurry to verify the freckles and face shape, that is a FAIL.

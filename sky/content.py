@@ -127,6 +127,24 @@ Keep #AIgenerated and #virtualinfluencer. Return JSON: {{"caption_en": "...", "c
     return out
 
 
+def review_photo(image_path, context=""):
+    """Honest Hebrew critique of a photo the owner wants to post. Returns dict with text_he + verdict."""
+    prompt = f"""You are the honest creative director of the AI virtual influencer Sky Fiori. Persona bible:
+<persona>
+{persona()}
+</persona>
+All images except the LAST are Sky's reference photos. The LAST image is a photo the owner wants to post.
+What is coming up in her story / plan: {context or "(nothing specific)"}
+Review it like a strict but friendly editor. Check: does she look like Sky (freckles, face, hair, eyes),
+is the face visible, realism and AI artifacts (hands, text, background), logos or real brand names,
+fits the persona and the red lines (not too revealing, no politics, no real famous people),
+fits the current story, and how well it would perform on Instagram (composition, light, mood).
+Return JSON: {{"verdict": "recommend" | "ok" | "not_recommended",
+ "score": 1-10,
+ "text_he": "4-7 short lines in Hebrew: what is good, what is weak, and a clear recommendation (and if relevant, how to fix it)"}}"""
+    return gemini_json(prompt, images=[*REFS, image_path])
+
+
 def caption_text(post):
     return f"{post['caption_en']}\n\n{post['caption_he']}\n\n{' '.join(post['hashtags'])}"
 

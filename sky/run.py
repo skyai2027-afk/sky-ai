@@ -1,12 +1,14 @@
 """Entry point.  python -m sky.run <command>
 
-  post            make and publish one post (scheduled runs respect config + /pause)
-  post --test     make one post and send it ONLY to Telegram as a preview (nothing is published)
+  post            prepare the next post (scheduled runs respect config + /pause)
+  post --test     prepare one post and send it ONLY to Telegram as a preview (nothing is published)
+  check           every ~30 min: read Telegram replies (choose / approve / edit), commands, new photos
   weekly-ask      Sunday morning: ask the owner on Telegram for this week's topics
   weekly-plan     Sunday evening: read the answer (or choose alone) and save the week plan
 """
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -20,15 +22,26 @@ from .util import (PAGES_BASE, POSTS, RAW_BASE, REFS, ROOT, config, load_env, lo
 
 ON_GITHUB = os.environ.get("GITHUB_ACTIONS") == "true"
 
+APPROVE = {"/ok", "ok", "אוקיי", "פרסם", "לפרסם", "כן", "מאשר", "אשר", "👍", "✅"}
+REJECT = {"/no", "no", "לא", "בטל", "דלג", "❌", "👎"}
+NEW_IMAGE = {"/new", "תמונה חדשה", "/newimage"}
+EDIT_PREFIX = ("תקן", "שנה", "edit", "/edit")
+CHOICE = re.compile(r"^(?:פרסם|לפרסם|/ok|ok|אפשרות|תמונה)?\s*([1-9])$")
 
-# ---------------- Telegram inbox (also handles /pause /resume /status) ----------------
+HELP = ("פקודות: /pause לעצירה, /resume להמשך, /status למצב, /clear לניקוי תור התמונות שלך.\n"
+        "📸 שולחים תמונה: מקבלים ביקורת, ובפוסט הבא היא מוצעת לצד תמונה שאני מייצר. אתה בוחר.\n"
+        "💡 כל הודעה אחרת: רעיון או עדכון לפוסט הבא (למשל: \"ברצלונה ניצחה 3-1\").")
+
+
+# ---------------- Telegram inbox ----------------
 def sync_inbox():
     tg = read_state("telegram.json", {"offset": 0, "paused": False})
     texts, tg["offset"] = tg_updates(tg.get("offset", 0))
     inbox = read_state("inbox.json", [])
     for m in texts:
         t = m["text"].strip()
-        cmd = t.split()[0].lower() if t.startswith("/") else ""
+        low = t.lower()
+        cmd = low.split()[0] if low.startswith("/") else ""
         if cmd == "/pause":
             tg["paused"] = True
             tg_send("⏸️ עצרתי. לא אפרסם עד שתשלח /resume")
@@ -38,18 +51,19 @@ def sync_inbox():
         elif cmd == "/status":
             h = read_state("history.json", [])
             last = h[-1]["date"] if h else "עדיין לא"
-            tg_send(f"מצב: {'⏸️ עצור' if tg.get('paused') else '▶️ פעיל'}\nפוסט אחרון: {last}\nסה\"כ פוסטים: {len(h)}")
+            tg_send(f"מצב: {'⏸️ עצור' if tg.get('paused') else '▶️ פעיל'}\nפוסט אחרון: {last}\n"
+                    f"סה\"כ פוסטים: {len(h)}\nתמונות שלך בתור: {len(read_state('queue.json', []))}\n"
+                    f"שלבים שנשארו בסיפור: {len(read_state('story.json', []))}")
         elif cmd in ("/start", "/help"):
-            tg_send("פקודות: /pause לעצירה, /resume להמשך, /status למצב.\n"
-                    "כל הודעה אחרת = רעיון או עדכון שאשתמש בו בפוסט הבא (למשל: \"ברצלונה ניצחה 3-1\").")
+            tg_send(HELP)
+        elif cmd == "/clear":
+            for q in read_state("queue.json", []):
+                (ROOT / q["file"]).unlink(missing_ok=True)
+            write_state("queue.json", [])
+            tg_send("🗑️ התור של התמונות שלך התרוקן.")
         elif m.get("photo"):
-            dest = ROOT / "state" / "queue" / f"{m['date']}.jpg"
-            tg_download(m["photo"], dest)
-            queue = read_state("queue.json", [])
-            queue.append({"file": f"state/queue/{dest.name}", "note": t, "date": m["date"]})
-            write_state("queue.json", queue)
-            tg_send(f"📸 קיבלתי את התמונה. היא תעלה בפוסט הבא (מספר {len(queue)} בתור).")
-        elif t.lower() in APPROVE | REJECT | NEW_IMAGE and not read_state("pending.json", None):
+            receive_photo(m, t)
+        elif (low in APPROVE | REJECT | NEW_IMAGE or CHOICE.match(low)) and not read_state("pending.json", None):
             tg_send("אין כרגע פוסט שמחכה לאישור 🙂")
         else:
             inbox.append({"text": t, "date": m["date"], "used": False})
@@ -58,7 +72,27 @@ def sync_inbox():
     return tg, inbox
 
 
-# ---------------- publishing helpers ----------------
+def receive_photo(m, note):
+    """Owner sent a photo: save it in the queue and send an honest critique."""
+    dest = ROOT / "state" / "queue" / f"{m['date']}.jpg"
+    tg_download(m["photo"], dest)
+    story = read_state("story.json", [])
+    ctx = (story[0]["note"] if story else "") + (f" | owner note: {note}" if note else "")
+    try:
+        rev = content.review_photo(dest, ctx)
+        review = f"{rev.get('text_he', '')}\n(ציון: {rev.get('score', '?')}/10)"
+    except Exception as e:  # noqa: BLE001
+        log("review failed:", e)
+        review = None
+    queue = read_state("queue.json", [])
+    queue.append({"file": f"state/queue/{dest.name}", "note": note, "date": m["date"], "review": review})
+    write_state("queue.json", queue)
+    tg_send(f"📸 קיבלתי את התמונה (מספר {len(queue)} בתור).\n\n🧐 הביקורת שלי:\n"
+            f"{review or 'לא הצלחתי לבדוק אותה כרגע.'}\n\n"
+            "בפוסט הבא תקבל אותה ליד תמונה שאני מייצר, ותבחר.")
+
+
+# ---------------- helpers ----------------
 def git_push(message):
     if not ON_GITHUB:
         return
@@ -88,6 +122,7 @@ def public_url(rel):
 
 def make_image(post, out_path, attempts):
     """Generate up to `attempts` images; keep the first one that passes the quality check."""
+    report = {}
     for i in range(attempts):
         img = cf_image(post["image_prompt"], refs=REFS, seed=int(time.time()) % 100000 + i)
         out_path.write_bytes(img)
@@ -97,8 +132,9 @@ def make_image(post, out_path, attempts):
     return False, report
 
 
-# ---------------- commands ----------------
+# ---------------- making a post ----------------
 def cmd_post(test=False, image=None, note=""):
+    """Prepare the next post. If the owner supplied a photo, BOTH it and a generated image are offered."""
     cfg = config()
     tg, inbox = sync_inbox()
     scheduled = os.environ.get("SKY_SCHEDULED") == "1"
@@ -108,113 +144,138 @@ def cmd_post(test=False, image=None, note=""):
         return
 
     history = read_state("history.json", [])
-    plan = read_state("week_plan.json", {})
-    notes = plan.get(content.today_he(), "")
+    notes = read_state("week_plan.json", {}).get(content.today_he(), "")
     last_ts = history[-1]["ts"] if history else 0
     fresh = [m for m in inbox if not m["used"] and m["date"] > last_ts - 3 * 86400]
-
     stamp = now().strftime("%Y-%m-%d_%H%M")
-    folder = (ROOT / "drafts" / "test") if test else POSTS
-    folder.mkdir(parents=True, exist_ok=True)
-    img_path = folder / f"{stamp}.jpg"
+    work = ROOT / ("drafts/test" if test else "state/pending")
+    work.mkdir(parents=True, exist_ok=True)
 
     # storyline: an ordered list of upcoming posts (e.g. a trip), used before the normal topic mix
     story = read_state("story.json", [])
-    if story and not image:
+    if story:
         notes = f"STORYLINE STEP (follow it exactly): {story[0]['note']}"
-        if story[0].get("image"):
-            image, note = str(ROOT / story[0]["image"]), story[0]["note"]
 
+    # the owner's photo for this post, if any: command line > story step photo > photo sent on Telegram
     queue = read_state("queue.json", [])
-    from_queue = False
-    if not image and queue:  # an image the owner sent on Telegram goes first
-        item = queue[0]
-        image, note, from_queue = str(ROOT / item["file"]), item.get("note", ""), True
-    if image:  # owner's own photo: only write the caption
-        img_path.write_bytes(open(image, "rb").read())
-        post = content.caption_for_image(img_path, history, note or notes, [])
-        fresh = []  # keep the owner's ideas for the next generated post
-        ok, report = True, {}
-        if from_queue and not test:
-            (ROOT / queue[0]["file"]).unlink(missing_ok=True)
-            write_state("queue.json", queue[1:])
-    else:
+    owner = None
+    if image:
+        owner = {"src": image, "note": note, "queue_file": None, "review": None}
+    elif story and story[0].get("image"):
+        owner = {"src": str(ROOT / story[0]["image"]), "note": story[0]["note"], "queue_file": None,
+                 "review": None}
+    elif queue:
+        q = queue[0]
+        owner = {"src": str(ROOT / q["file"]), "note": q.get("note", ""), "queue_file": q["file"],
+                 "review": q.get("review")}
+
+    options = []
+    if owner:
+        path = work / f"{stamp}_owner.jpg"
+        path.write_bytes(open(owner["src"], "rb").read())
+        post = content.caption_for_image(path, history, owner["note"] or notes, [])
+        options.append({"source": "owner", "image": path.relative_to(ROOT).as_posix(), "post": post,
+                        "caption": content.caption_text(post), "queue_file": owner["queue_file"],
+                        "review": owner["review"]})
+
+    extra_note = ""
+    try:
         post = content.write_post(history, notes, [m["text"] for m in fresh])
         log("post idea:", post["pillar"], "|", post["scene"])
-        try:
-            ok, report = make_image(post, img_path, cfg.get("max_image_attempts", 3))
-        except QuotaExceeded:
+        path = work / f"{stamp}_gen.jpg"
+        ok, report = make_image(post, path, cfg.get("max_image_attempts", 3))
+        options.append({"source": "generated", "image": path.relative_to(ROOT).as_posix(), "post": post,
+                        "caption": content.caption_text(post), "qc_ok": ok,
+                        "qc_note": "" if ok else "⚠️ לא עברה את בדיקת האיכות במלואה: "
+                                                 + ", ".join(report.get("problems", []))})
+    except QuotaExceeded:
+        if not owner:
             tg_send("⚠️ המכסה היומית של Cloudflare לתמונות נגמרה, אז הפוסט הזה ידלג. ננסה שוב בריצה הבאה.")
             git_push("sync inbox")
             raise
-    caption = content.caption_text(post)
-    log("caption:\n" + caption)
+        extra_note = "(לא נשארה מכסה לייצר תמונה חלופית, אז יש רק את התמונה שלך)"
 
-    if test or not ok:
-        head = "🧪 תצוגה מקדימה, לא פורסם" if test else "⚠️ התמונה לא עברה בדיקת איכות, אז לא פרסמתי. הנה מה שיצא:"
-        problems = "" if ok else f"\nבעיות: {', '.join(report.get('problems', []))}"
-        tg_photo(img_path, f"{head}{problems}\n\n{caption}")
-        if not ok and not test:
-            img_path.unlink(missing_ok=True)
-        git_push("sync inbox")
+    if test:
+        for i, o in enumerate(options, 1):
+            tg_photo(ROOT / o["image"], f"🧪 בדיקה, אפשרות {i}\n\n{o['caption']}")
         return
 
     for m in fresh:
         m["used"] = True
     write_state("inbox.json", inbox)
-    if story:  # this post covered the current storyline step (an owner photo from the queue replaces it too)
+    if story:  # this post covers the current storyline step
         write_state("story.json", story[1:])
         if len(story) == 1:
             tg_send("📖 הסיפור הסתיים. מהפוסט הבא חוזרים לתמהיל הרגיל של הנושאים.")
 
-    if cfg.get("approval_mode"):
-        old = read_state("pending.json", None)
-        if old:
-            (ROOT / old["image"]).unlink(missing_ok=True)
-            tg_send("ℹ️ הפוסט הקודם שחיכה לאישור הוחלף בפוסט החדש.")
-        pend_img = ROOT / "state" / "pending" / f"{stamp}.jpg"
-        pend_img.parent.mkdir(parents=True, exist_ok=True)
-        pend_img.write_bytes(img_path.read_bytes())
-        img_path.unlink(missing_ok=True)
-        write_state("pending.json", {"stamp": stamp, "image": f"state/pending/{stamp}.jpg", "post": post,
-                                     "caption": caption, "created_ts": int(time.time()),
-                                     "generated": not image})
-        send_preview(pend_img, caption)
-        git_push(f"pending {stamp}")
+    if not cfg.get("approval_mode"):
+        best = (next((o for o in options if o["source"] == "owner"), None)
+                or next((o for o in options if o.get("qc_ok")), None))
+        if not best:
+            cleanup({"options": options})
+            tg_send("⚠️ התמונה לא עברה בדיקת איכות, אז לא פרסמתי.")
+            git_push("sync inbox")
+            return
+        finish(best, stamp)
+        cleanup({"options": options})
+        git_push(f"post {stamp}")
         return
 
-    publish(post, img_path, caption, stamp)
+    old = read_state("pending.json", None)
+    if old:
+        cleanup(old)
+        tg_send("ℹ️ הפוסט הקודם שחיכה לאישור הוחלף בפוסט החדש.")
+    pending = {"stamp": stamp, "created_ts": int(time.time()), "options": options, "extra_note": extra_note}
+    write_state("pending.json", pending)
+    send_preview(pending)
+    git_push(f"pending {stamp}")
 
 
-APPROVE = {"/ok", "ok", "אוקיי", "פרסם", "לפרסם", "כן", "מאשר", "אשר", "👍", "✅"}
-REJECT = {"/no", "no", "לא", "בטל", "דלג", "❌", "👎"}
-NEW_IMAGE = {"/new", "תמונה חדשה", "/newimage"}
-EDIT_PREFIX = ("תקן", "שנה", "edit", "/edit")
-
-
-def send_preview(img_path, caption):
+def send_preview(pending):
     hours = config().get("approval_hours", 12)
-    tg_photo(img_path, "🕐 פוסט מחכה לאישור שלך:\n\n" + caption)
-    tg_send("מה עושים?\n"
-            "✅ \"פרסם\" (או /ok): מפרסמים\n"
-            "❌ \"דלג\" (או /no): לא מפרסמים\n"
-            "✏️ \"תקן: ...\": לשנות את הכיתוב, למשל \"תקן: בלי אימוג'י, ויותר מצחיק\"\n"
-            "🔄 \"תמונה חדשה\": לייצר תמונה אחרת לאותו רעיון\n"
-            f"אם לא תענה תוך {hours} שעות, הפוסט לא יעלה.\n"
-            "(אני בודק תשובות כל כחצי שעה, אז זה יכול לקחת כמה דקות.)")
+    opts = pending["options"]
+    for i, o in enumerate(opts, 1):
+        who = "📸 התמונה שלך" if o["source"] == "owner" else "🎨 התמונה שאני יצרתי"
+        extra = ""
+        if o.get("review"):
+            extra = f"\n\n🧐 הביקורת שלי:\n{o['review']}"
+        elif o.get("qc_note"):
+            extra = f"\n\n{o['qc_note']}"
+        label = f"אפשרות {i}: {who}" if len(opts) > 1 else who
+        tg_photo(ROOT / o["image"], f"{label}\n\n{o['caption']}{extra}")
+    pick = ("✅ \"1\" או \"2\": מפרסמים את האפשרות שבחרת\n" if len(opts) > 1
+            else "✅ \"פרסם\" (או /ok): מפרסמים\n")
+    tg_send("🕐 פוסט מחכה לאישור שלך." + (f"\n{pending['extra_note']}" if pending.get("extra_note") else "")
+            + "\n\nמה עושים?\n" + pick
+            + "❌ \"דלג\": לא מפרסמים\n"
+              "✏️ \"תקן: ...\": לשנות את הכיתוב, למשל \"תקן: בלי אימוג'י, ויותר מצחיק\"\n"
+              "🔄 \"תמונה חדשה\": לייצר מחדש את התמונה שלי\n"
+            + f"אם לא תענה תוך {hours} שעות, הפוסט לא יעלה.\n"
+              "(אני בודק תשובות כל כחצי שעה, אז זה יכול לקחת כמה דקות.)")
+
+
+def cleanup(pending):
+    for o in pending.get("options", []):
+        (ROOT / o["image"]).unlink(missing_ok=True)
+
+
+def finish(option, stamp):
+    """Publish the chosen option; an owner photo from the queue leaves the queue."""
+    publish(option["post"], ROOT / option["image"], option["caption"], stamp)
+    if option.get("queue_file"):
+        (ROOT / option["queue_file"]).unlink(missing_ok=True)
+        write_state("queue.json", [q for q in read_state("queue.json", []) if q["file"] != option["queue_file"]])
 
 
 def publish(post, img_path, caption, stamp):
     cfg = config()
     POSTS.mkdir(parents=True, exist_ok=True)
-    if img_path.parent != POSTS:
-        dest = POSTS / f"{stamp}.jpg"
-        dest.write_bytes(img_path.read_bytes())
-        img_path = dest
-    folder = POSTS
+    dest = POSTS / f"{stamp}.jpg"
+    dest.write_bytes(img_path.read_bytes())
+    img_path = dest
     history = read_state("history.json", [])
-    (folder / f"{stamp}.json").write_text(json.dumps({**post, "caption": caption}, ensure_ascii=False, indent=1),
-                                          encoding="utf-8")
+    (POSTS / f"{stamp}.json").write_text(json.dumps({**post, "caption": caption}, ensure_ascii=False, indent=1),
+                                         encoding="utf-8")
     results, platforms = {}, cfg.get("platforms", {})
     if platforms.get("facebook"):
         try:
@@ -235,19 +296,19 @@ def publish(post, img_path, caption, stamp):
             except Exception as e:  # noqa: BLE001
                 results["threads"] = f"ERROR {str(e)[:200]}"
 
-    history.append({"date": stamp, "ts": int(time.time()), "pillar": post["pillar"], "scene": post["scene"],
-                    "results": results})
+    history.append({"date": stamp, "ts": int(time.time()), "pillar": post.get("pillar"),
+                    "scene": post.get("scene"), "results": results})
     write_state("history.json", history[-200:])
 
     status = "\n".join(f"{'✅' if not str(v).startswith('ERROR') else '❌'} {k}: "
                        f"{'פורסם' if not str(v).startswith('ERROR') else v}" for k, v in results.items())
     tg_photo(img_path, f"📢 פוסט חדש עלה\n{status}\n\n{caption}")
     tg_document(img_path, "🎵 לטיקטוק: הקובץ באיכות מלאה. הכיתוב מוכן בהודעה הקודמת, רק להעתיק.")
-    git_push(f"post {stamp}")
 
 
+# ---------------- answers on Telegram ----------------
 def cmd_check():
-    """Runs every ~30 min: handles approvals / edits for the pending post, plus inbox commands."""
+    """Runs every ~30 min: handles choices / approvals / edits for the pending post, plus inbox commands."""
     cfg = config()
     sync_inbox()
     pending = read_state("pending.json", None)
@@ -255,58 +316,78 @@ def cmd_check():
         git_push("sync inbox")
         return
     inbox = read_state("inbox.json", [])
-    img = ROOT / pending["image"]
+    opts = pending["options"]
     replies = [m for m in inbox if not m["used"] and m["date"] >= pending["created_ts"]]
     for m in replies:
         t = m["text"].strip()
         low = t.lower()
-        if low in APPROVE:
+        choice = CHOICE.match(low)
+        idx = None
+        if choice:
+            idx = int(choice.group(1)) - 1
+        elif low in APPROVE:
+            if len(opts) == 1:
+                idx = 0
+            else:
+                m["used"] = True
+                tg_send("יש שתי אפשרויות 🙂 כתוב \"1\" או \"2\".")
+                continue
+        if idx is not None:
             m["used"] = True
             write_state("inbox.json", inbox)
+            if idx >= len(opts):
+                tg_send(f"אין אפשרות {idx + 1}. יש {len(opts)}.")
+                continue
             write_state("pending.json", None)
-            publish(pending["post"], img, pending["caption"], pending["stamp"])
-            img.unlink(missing_ok=True)
+            finish(opts[idx], pending["stamp"])
+            cleanup(pending)
             git_push(f"post {pending['stamp']}")
             return
         if low in REJECT:
             m["used"] = True
-            img.unlink(missing_ok=True)
-            write_state("pending.json", None)
             write_state("inbox.json", inbox)
-            tg_send("👌 דילגתי. הפוסט לא יעלה.")
+            cleanup(pending)
+            write_state("pending.json", None)
+            tg_send("👌 דילגתי. הפוסט לא יעלה. (תמונה ששלחת נשארת בתור. /clear מנקה את התור.)")
             git_push("pending rejected")
             return
         if low in NEW_IMAGE:
             m["used"] = True
             write_state("inbox.json", inbox)
-            if not pending.get("generated"):
-                tg_send("את התמונה הזו שלחת בעצמך, אז אין לי איך לייצר אותה מחדש. אפשר \"פרסם\", \"דלג\" או \"תקן: ...\".")
+            gen = next((o for o in opts if o["source"] == "generated"), None)
+            if not gen:
+                tg_send("אין כאן תמונה שאני יצרתי, אז אין מה לייצר מחדש. אפשר לבחור, \"דלג\" או \"תקן: ...\".")
                 continue
-            ok, report = make_image(pending["post"], img, cfg.get("max_image_attempts", 3))
+            ok, report = make_image(gen["post"], ROOT / gen["image"], cfg.get("max_image_attempts", 3))
+            gen["qc_ok"] = ok
+            gen["qc_note"] = "" if ok else "⚠️ גם התמונה הזו לא מושלמת: " + ", ".join(report.get("problems", []))
             pending["created_ts"] = int(time.time())
             write_state("pending.json", pending)
-            send_preview(img, pending["caption"] + ("" if ok else "\n\n⚠️ גם התמונה הזו לא מושלמת: "
-                                                       + ", ".join(report.get("problems", []))))
+            send_preview(pending)
             git_push("pending new image")
             return
         if low.startswith(EDIT_PREFIX):
             m["used"] = True
             write_state("inbox.json", inbox)
             fix = t.split(":", 1)[1].strip() if ":" in t else t
-            pending["post"] = content.revise_caption(pending["post"], fix)
-            pending["caption"] = content.caption_text(pending["post"])
+            for o in opts:
+                o["post"] = content.revise_caption(o["post"], fix)
+                o["caption"] = content.caption_text(o["post"])
             pending["created_ts"] = int(time.time())
             write_state("pending.json", pending)
-            send_preview(img, pending["caption"])
+            send_preview(pending)
             git_push("pending caption edited")
             return
+        # anything else stays in the inbox as an idea for a future post
+    write_state("inbox.json", inbox)
     if time.time() - pending["created_ts"] > cfg.get("approval_hours", 12) * 3600:
-        img.unlink(missing_ok=True)
+        cleanup(pending)
         write_state("pending.json", None)
         tg_send("⌛ לא קיבלתי אישור בזמן, אז הפוסט האחרון לא עלה. ננסה שוב בפוסט הבא.")
     git_push("sync inbox")
 
 
+# ---------------- weekly topics ----------------
 def schedule_off():
     return os.environ.get("SKY_SCHEDULED") == "1" and not config().get("schedule_enabled")
 

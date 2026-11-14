@@ -118,16 +118,24 @@ def cmd_post(test=False, image=None, note=""):
     folder.mkdir(parents=True, exist_ok=True)
     img_path = folder / f"{stamp}.jpg"
 
+    # storyline: an ordered list of upcoming posts (e.g. a trip), used before the normal topic mix
+    story = read_state("story.json", [])
+    if story and not image:
+        notes = f"STORYLINE STEP (follow it exactly): {story[0]['note']}"
+        if story[0].get("image"):
+            image, note = str(ROOT / story[0]["image"]), story[0]["note"]
+
     queue = read_state("queue.json", [])
+    from_queue = False
     if not image and queue:  # an image the owner sent on Telegram goes first
         item = queue[0]
-        image, note = str(ROOT / item["file"]), item.get("note", "")
+        image, note, from_queue = str(ROOT / item["file"]), item.get("note", ""), True
     if image:  # owner's own photo: only write the caption
         img_path.write_bytes(open(image, "rb").read())
         post = content.caption_for_image(img_path, history, note or notes, [])
         fresh = []  # keep the owner's ideas for the next generated post
         ok, report = True, {}
-        if queue and image == str(ROOT / queue[0]["file"]) and not test:
+        if from_queue and not test:
             (ROOT / queue[0]["file"]).unlink(missing_ok=True)
             write_state("queue.json", queue[1:])
     else:
@@ -154,6 +162,10 @@ def cmd_post(test=False, image=None, note=""):
     for m in fresh:
         m["used"] = True
     write_state("inbox.json", inbox)
+    if story:  # this post covered the current storyline step (an owner photo from the queue replaces it too)
+        write_state("story.json", story[1:])
+        if len(story) == 1:
+            tg_send("📖 הסיפור הסתיים. מהפוסט הבא חוזרים לתמהיל הרגיל של הנושאים.")
 
     if cfg.get("approval_mode"):
         old = read_state("pending.json", None)

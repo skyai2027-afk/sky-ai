@@ -1,5 +1,5 @@
 {
-  "schedule_enabled": false,
+  "schedule_enabled": true,
   "max_image_attempts": 3,
   "platforms": {
     "facebook": true,

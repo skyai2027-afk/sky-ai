@@ -1,0 +1,46 @@
+name: Sky - weekly topics (Telegram)
+
+on:
+  schedule:
+    - cron: "0 6 * * 0"    # Sunday 08:00 Israel (winter): ask
+    - cron: "0 18 * * 0"   # Sunday 20:00 Israel (winter): read answer / choose alone
+  workflow_dispatch:
+    inputs:
+      step:
+        description: "ask or plan"
+        default: "ask"
+        type: choice
+        options: [ask, plan]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sky
+  cancel-in-progress: false
+
+jobs:
+  weekly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Git identity
+        run: |
+          git config user.name "Sky AI bot"
+          git config user.email "skyai2027-afk@users.noreply.github.com"
+      - name: Run
+        env:
+          SKY_SCHEDULED: ${{ github.event_name == 'schedule' && '1' || '0' }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ "${{ github.event.schedule }}" = "0 6 * * 0" ] || [ "${{ github.event.inputs.step }}" = "ask" ]; then
+            python -m sky.run weekly-ask
+          else
+            python -m sky.run weekly-plan
+          fi

@@ -1,0 +1,9 @@
+{
+  "schedule_enabled": false,
+  "max_image_attempts": 3,
+  "platforms": {
+    "facebook": true,
+    "instagram": false,
+    "threads": false
+  }
+}

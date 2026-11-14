@@ -1,0 +1,54 @@
+name: Sky - daily posts
+
+on:
+  schedule:
+    # UTC times. Israel winter = UTC+2, summer = UTC+3.
+    # 08:00 UTC = 10:00 Israel (winter), 17:00 UTC = 19:00 Israel (winter)
+    - cron: "0 8,17 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "post = publish for real, test = preview to Telegram only"
+        default: "test"
+        type: choice
+        options: [test, post]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sky
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Git identity
+        run: |
+          git config user.name "Sky AI bot"
+          git config user.email "skyai2027-afk@users.noreply.github.com"
+      - name: Run
+        env:
+          SKY_SCHEDULED: ${{ github.event_name == 'schedule' && '1' || '0' }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "test" ]; then
+            python -m sky.run post --test
+          else
+            python -m sky.run post
+          fi

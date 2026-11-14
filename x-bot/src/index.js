@@ -7,8 +7,8 @@ const MODELS = ["gemini-flash-latest", "gemini-3.8-flash", "gemini-3.5-flash", "
 const HELP = `🐦 Sky X, רק בשביל X (טוויטר)
 אני מנסחת, אתה מפרסם ב-X ידנית.
 
-✍️ "ציוץ": 3 הצעות לציוץ (אני גם בודקת חדשות עדכניות)
-✍️ "ציוץ על הקלאסיקו": 3 הצעות על נושא מסוים
+✍️ "ציוץ": 3 הצעות לציוץ
+✍️ "ציוץ על ...": 3 הצעות על נושא מסוים (למשל "ציוץ על הניצחון 3-1 על ריאל". את העובדות אתה נותן לי)
 💬 שולחים טקסט של ציוץ: 3 הצעות לתגובה
 📸 שולחים צילום מסך של ציוץ: 3 הצעות לתגובה
 🧠 "הגבתי: ..." או "פרסמתי: ...": אני לומדת מהסגנון שלך
@@ -135,10 +135,10 @@ async function tweets(env, topic) {
   const p = `${await basePrompt(env)}
 
 Write 3 different tweet options${topic ? ` about: "${topic}"` : " for today"}.
-${topic ? "" : "First search for today's real news about FC Barcelona, tennis, and Tel Aviv life, and use a real current hook if there is one."}
+${topic ? "" : "Do not refer to specific real events you are not sure about (scores, transfers, news). Use evergreen fan life, tennis, Tel Aviv life, food, being an AI."}
 Today's date: ${new Date().toISOString().slice(0, 10)}.
-Return ONLY JSON: {"tweets": ["...", "...", "..."], "context_he": "one short Hebrew line: what real news (if any) you used"}`;
-  const r = await gemini(env, p, { search: true });
+Return ONLY JSON: {"tweets": ["...", "...", "..."], "context_he": ""}`;
+  const r = await gemini(env, p);
   return r;
 }
 

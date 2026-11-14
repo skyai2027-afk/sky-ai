@@ -2,7 +2,7 @@
 // It never posts to X itself: the owner copies and posts manually.
 
 const PERSONA_URL = "https://raw.githubusercontent.com/skyai2027-afk/sky-ai/main/persona.md";
-const MODELS = ["gemini-3.5-flash", "gemini-flash-latest", "gemini-flash-lite-latest", "gemini-3.8-flash"];
+const MODELS = ["gemini-flash-lite-latest", "gemini-3.5-flash", "gemini-flash-latest", "gemini-3.8-flash"];
 
 const HELP = `🐦 Sky X, רק בשביל X (טוויטר)
 אני מנסחת, אתה מפרסם ב-X ידנית.
@@ -124,7 +124,8 @@ ${examples}
 
 Hard rules: cynicism at situations, never insults at people; no politics/religion; no slurs;
 never invent scores, quotes or news (only use facts you verified with search, otherwise write an opinion);
-max 280 characters each; at most one hashtag; English unless the topic is Israeli or the owner writes Hebrew.`;
+max 280 characters each; at most one hashtag.
+LANGUAGE: write in HEBREW — natural spoken Israeli Hebrew of a 24-year-old from Tel Aviv, light slang, not a translation from English. Only if the tweet being replied to is in English or another language, reply in that language.`;
 }
 
 // ---------------- actions ----------------

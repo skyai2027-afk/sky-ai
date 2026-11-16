@@ -7,5 +7,14 @@
   "results": {
    "facebook": "1406653135873920_122108890641539383"
   }
+ },
+ {
+  "date": "2026-11-16_1211",
+  "ts": 1794829530,
+  "pillar": "travel",
+  "scene": "Sky eating a donut on a NYC street in her travel-day hoodie, grabbing one last treat before heading to the airport.",
+  "results": {
+   "facebook": "ERROR HTTP 400: {\"error\":{\"message\":\"Any of the pages_read_engagement, pages_manage_metadata,\\n        pages_read_user_content, pages_manage_ads, pages_show_list or\\n        pages_messaging permission(s) mu"
+  }
  }
 ]

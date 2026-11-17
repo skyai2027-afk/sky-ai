@@ -16,5 +16,14 @@
   "results": {
    "facebook": "ERROR HTTP 400: {\"error\":{\"message\":\"Any of the pages_read_engagement, pages_manage_metadata,\\n        pages_read_user_content, pages_manage_ads, pages_show_list or\\n        pages_messaging permission(s) mu"
   }
+ },
+ {
+  "date": "2026-11-16_1955",
+  "ts": 1794897222,
+  "pillar": "food",
+  "scene": "Sky drinking her first coffee back home in her Tel Aviv apartment after the New York trip",
+  "results": {
+   "facebook": "ERROR HTTP 400: {\"error\":{\"message\":\"Any of the pages_read_engagement, pages_manage_metadata,\\n        pages_read_user_content, pages_manage_ads, pages_show_list or\\n        pages_messaging permission(s) mu"
+  }
  }
 ]

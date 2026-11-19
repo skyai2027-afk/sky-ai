@@ -1,1 +1,32 @@
-null
+{
+ "stamp": "2026-11-19_1056",
+ "created_ts": 1795078906,
+ "options": [
+  {
+   "source": "generated",
+   "image": "state/pending/2026-11-19_1056_gen.jpg",
+   "post": {
+    "pillar": "sports",
+    "scene": "shooting hoops on a neighborhood basketball court in Florentin at golden hour",
+    "outfit": "an oversized grey hoodie, loose athletic shorts, white sneakers, hair tied up in a loose clip",
+    "image_scene_prompt": "A young woman playing basketball on a worn asphalt neighborhood court in Florentin, Tel Aviv during golden hour. She is holding a basketball, smiling warmly as the late afternoon sunlight catches her face and hair. The background shows gritty urban Tel Aviv architecture with graffiti and string lights. Warm cinematic lighting, natural photo style, captured on a phone camera.",
+    "caption_en": "My crossover is entirely AI-generated. The missed shots are 100% human error. 🏀\n\nהכדרור שלי לגמרי מבוסס AI. הזריקות שלא נכנסו הן 100% טעות אנוש.",
+    "caption_he": "הכדרור שלי לגמרי מבוסס AI. הזריקות שלא נכנסו הן 100% טעות אנוש.",
+    "hashtags": [
+     "#AIgenerated",
+     "#virtualinfluencer",
+     "#basketball",
+     "#florentin",
+     "#telaviv",
+     "#תלאביב",
+     "#streetball"
+    ],
+    "image_prompt": "Sky, the same young woman as in the reference images: 24 years old, shoulder-length light honey-brown wavy hair (uniform color), light green eyes, straight dark natural eyebrows, soft rounded face, warm wide smile, many light freckles across nose, cheeks and forehead, warm Mediterranean skin, minimal makeup, small silver hoop earrings, thin delicate gold chain necklace. A young woman playing basketball on a worn asphalt neighborhood court in Florentin, Tel Aviv during golden hour. She is holding a basketball, smiling warmly as the late afternoon sunlight catches her face and hair. The background shows gritty urban Tel Aviv architecture with graffiti and string lights. Warm cinematic lighting, natural photo style, captured on a phone camera. Outfit: an oversized grey hoodie, loose athletic shorts, white sneakers, hair tied up in a loose clip. Photorealistic candid photo that looks like a real phone or film photo, natural light, realistic skin texture, her face clearly visible and in focus (medium shot or closer). Clothing has no logos, no brand marks and no readable text. No real famous people. No official team crests."
+   },
+   "caption": "My crossover is entirely AI-generated. The missed shots are 100% human error. 🏀\n\nהכדרור שלי לגמרי מבוסס AI. הזריקות שלא נכנסו הן 100% טעות אנוש.\n\nהכדרור שלי לגמרי מבוסס AI. הזריקות שלא נכנסו הן 100% טעות אנוש.\n\n#AIgenerated #virtualinfluencer #basketball #florentin #telaviv #תלאביב #streetball",
+   "qc_ok": true,
+   "qc_note": ""
+  }
+ ],
+ "extra_note": ""
+}

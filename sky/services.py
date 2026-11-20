@@ -6,7 +6,7 @@ import time
 from .util import (HttpError, env, http, log, multipart, post_form, post_json, retry)
 
 # ======================= Gemini (text + vision) =======================
-GEMINI_MODELS = ["gemini-flash-latest", "gemini-3.8-flash", "gemini-3.5-flash", "gemini-flash-lite-latest"]
+GEMINI_MODELS = ["gemini-3.5-flash", "gemini-flash-latest", "gemini-flash-lite-latest", "gemini-3.8-flash"]
 
 
 def gemini_json(prompt, images=()):
@@ -18,7 +18,12 @@ def gemini_json(prompt, images=()):
     body = {"contents": [{"parts": parts}],
             "generationConfig": {"responseMimeType": "application/json", "temperature": 0.9}}
     last = None
-    for model in GEMINI_MODELS:
+    # Gemini is often overloaded (503): go through all models, up to 3 rounds with growing pauses
+    for round_ in range(3):
+      if round_:
+        log(f"all Gemini models busy, waiting before round {round_ + 1}")
+        time.sleep(60 * round_)
+      for model in GEMINI_MODELS:
         try:
             data = post_json(f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
                              body, {"x-goog-api-key": env("GEMINI_API_KEY")}, timeout=100)
@@ -26,7 +31,7 @@ def gemini_json(prompt, images=()):
             return json.loads(text)
         except Exception as e:  # noqa: BLE001
             last = e
-            log(f"gemini {model} failed: {str(e)[:200]}")
+            log(f"gemini {model} failed: {str(e)[:150]}")
             time.sleep(3)
     raise RuntimeError(f"all Gemini models failed: {last}")
 
@@ -104,7 +109,8 @@ def tg_document(path, caption=""):
 
 def tg_updates(offset):
     """New messages from the owner's chat since `offset`. Returns (texts, new_offset)."""
-    data = post_form(_tg("getUpdates"), {"offset": offset, "timeout": 0})
+    data = retry(lambda: post_form(_tg("getUpdates"), {"offset": offset, "timeout": 0}), attempts=4, wait=10,
+                 what="telegram getUpdates")
     texts, new_offset = [], offset
     for u in data.get("result", []):
         new_offset = max(new_offset, u["update_id"] + 1)

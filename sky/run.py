@@ -22,11 +22,11 @@ from .util import (PAGES_BASE, POSTS, RAW_BASE, REFS, ROOT, config, load_env, lo
 
 ON_GITHUB = os.environ.get("GITHUB_ACTIONS") == "true"
 
-APPROVE = {"/ok", "ok", "אוקיי", "פרסם", "לפרסם", "כן", "מאשר", "אשר", "👍", "✅"}
+APPROVE = {"/ok", "ok", "אוקיי", "פרסם", "תפרסם", "לפרסם", "כן", "מאשר", "אשר", "יאללה", "👍", "✅"}
 REJECT = {"/no", "no", "לא", "בטל", "דלג", "❌", "👎"}
 NEW_IMAGE = {"/new", "תמונה חדשה", "/newimage"}
 EDIT_PREFIX = ("תקן", "שנה", "edit", "/edit")
-CHOICE = re.compile(r"^(?:פרסם|לפרסם|/ok|ok|אפשרות|תמונה)?\s*([1-9])$")
+CHOICE = re.compile(r"^(?:פרסם|תפרסם|לפרסם|/ok|ok|אפשרות|תמונה)?\s*([1-9])$")
 
 HELP = ("פקודות: /pause לעצירה, /resume להמשך, /status למצב, /clear לניקוי תור התמונות שלך.\n"
         "📸 שולחים תמונה: מקבלים ביקורת, ובפוסט הבא היא מוצעת לצד תמונה שאני מייצר. אתה בוחר.\n"
@@ -203,10 +203,8 @@ def cmd_post(test=False, image=None, note=""):
     for m in fresh:
         m["used"] = True
     write_state("inbox.json", inbox)
-    if story:  # this post covers the current storyline step
-        write_state("story.json", story[1:])
-        if len(story) == 1:
-            tg_send("📖 הסיפור הסתיים. מהפוסט הבא חוזרים לתמהיל הרגיל של הנושאים.")
+    for o in options:  # the story moves on only when one of these is really published
+        o["story_note"] = story[0]["note"] if story else None
 
     if not cfg.get("approval_mode"):
         best = (next((o for o in options if o["source"] == "owner"), None)
@@ -261,7 +259,14 @@ def cleanup(pending):
 
 def finish(option, stamp):
     """Publish the chosen option; an owner photo from the queue leaves the queue."""
-    publish(option["post"], ROOT / option["image"], option["caption"], stamp)
+    ok = publish(option["post"], ROOT / option["image"], option["caption"], stamp)
+    if not ok:
+        return False
+    story = read_state("story.json", [])
+    if option.get("story_note") and story and story[0]["note"] == option["story_note"]:
+        write_state("story.json", story[1:])
+        if len(story) == 1:
+            tg_send("📖 הסיפור הסתיים. מהפוסט הבא חוזרים לתמהיל הרגיל של הנושאים.")
     if option.get("queue_file"):
         (ROOT / option["queue_file"]).unlink(missing_ok=True)
         write_state("queue.json", [q for q in read_state("queue.json", []) if q["file"] != option["queue_file"]])

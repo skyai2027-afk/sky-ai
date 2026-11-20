@@ -1,28 +1,29 @@
 {
- "stamp": "2026-11-20_1055",
- "created_ts": 1795165164,
+ "stamp": "2026-11-20_1952",
+ "created_ts": 1795197410,
  "options": [
   {
    "source": "generated",
-   "image": "state/pending/2026-11-20_1055_gen.jpg",
+   "image": "state/pending/2026-11-20_1952_gen.jpg",
    "post": {
-    "pillar": "food",
-    "scene": "Sitting at an outdoor table in Shuk HaCarmel eating fresh hummus after returning from New York",
-    "outfit": "Oversized vintage dark denim jacket over a plain white t-shirt, loose grey cargo pants, delicate gold necklace, small silver hoop earrings",
-    "image_scene_prompt": "A young woman seated at a small wooden street table in Shuk HaCarmel market in Tel Aviv, holding a piece of pita near a bowl of fresh hummus topped with chickpeas and olive oil. Autumn morning sunlight filtering through market canopies. Candid phone-photography style, natural light, slight warm film texture, cozy urban market setting with subtle background blur.",
-    "caption_en": "New York pizza had its moment, but nothing hits quite like a proper plate of hummus back home. 🧆",
-    "caption_he": "פיצה בניו יורק זה נחמד והכל, אבל שום דבר לא משתווה לחומוס אמיתי בשוק הכרמל. 🧆",
+    "pillar": "fashion",
+    "scene": "Evening drinks at a cozy neighborhood bar in Florentin, Tel Aviv with warm ambient lights.",
+    "outfit": "Oversized dark charcoal blazer over a simple white tank top, wide-leg tailored pants, thin delicate gold chain necklace, and small silver hoop earrings.",
+    "image_scene_prompt": "Sky is sitting at an outdoor high wooden table of a warm, bustling bar in Florentin, Tel Aviv at night. She is leaning casually on the table with one arm, holding a glass with a cocktail, looking relaxed and comfortable. She wears a dark oversized charcoal blazer over a clean white top, with warm string lights glowing soft bokeh in the background. Candid medium shot, natural photography with warm night tones.",
+    "caption_en": "Back on home turf. Nothing beats a Friday night drink under the Tel Aviv lights. 🥂",
+    "caption_he": "חזרתי למגרש הביתי. אין כמו דרינק של שישי בערב מתחת לאורות של תל אביב. 🥂",
     "hashtags": [
      "#AIgenerated",
      "#virtualinfluencer",
-     "#telaviv",
+     "#TelAviv",
      "#תלאביב",
-     "#shukhacarmel",
-     "#telavivfood"
+     "#Florentin",
+     "#streetstyle",
+     "#nightout"
     ],
-    "image_prompt": "Sky, the same young woman as in the reference images: 24 years old, shoulder-length light honey-brown wavy hair (uniform color), light green eyes, straight dark natural eyebrows, soft rounded face, warm wide smile, many light freckles across nose, cheeks and forehead, warm Mediterranean skin, minimal makeup, small silver hoop earrings, thin delicate gold chain necklace. A young woman seated at a small wooden street table in Shuk HaCarmel market in Tel Aviv, holding a piece of pita near a bowl of fresh hummus topped with chickpeas and olive oil. Autumn morning sunlight filtering through market canopies. Candid phone-photography style, natural light, slight warm film texture, cozy urban market setting with subtle background blur. Outfit: Oversized vintage dark denim jacket over a plain white t-shirt, loose grey cargo pants, delicate gold necklace, small silver hoop earrings. Photorealistic candid photo that looks like a real phone or film photo, natural light, realistic skin texture, her face clearly visible and in focus (medium shot or closer). Clothing has no logos, no brand marks and no readable text. No real famous people. No official team crests."
+    "image_prompt": "Sky, the same young woman as in the reference images: 24 years old, shoulder-length light honey-brown wavy hair (uniform color), light green eyes, straight dark natural eyebrows, soft rounded face, warm wide smile, many light freckles across nose, cheeks and forehead, warm Mediterranean skin, minimal makeup, small silver hoop earrings, thin delicate gold chain necklace. Sky is sitting at an outdoor high wooden table of a warm, bustling bar in Florentin, Tel Aviv at night. She is leaning casually on the table with one arm, holding a glass with a cocktail, looking relaxed and comfortable. She wears a dark oversized charcoal blazer over a clean white top, with warm string lights glowing soft bokeh in the background. Candid medium shot, natural photography with warm night tones. Outfit: Oversized dark charcoal blazer over a simple white tank top, wide-leg tailored pants, thin delicate gold chain necklace, and small silver hoop earrings.. Photorealistic candid photo that looks like a real phone or film photo, natural light, realistic skin texture, her face clearly visible and in focus (medium shot or closer). Clothing has no logos, no brand marks and no readable text. No real famous people. No official team crests."
    },
-   "caption": "New York pizza had its moment, but nothing hits quite like a proper plate of hummus back home. 🧆\n\nפיצה בניו יורק זה נחמד והכל, אבל שום דבר לא משתווה לחומוס אמיתי בשוק הכרמל. 🧆\n\n#AIgenerated #virtualinfluencer #telaviv #תלאביב #shukhacarmel #telavivfood",
+   "caption": "Back on home turf. Nothing beats a Friday night drink under the Tel Aviv lights. 🥂\n\nחזרתי למגרש הביתי. אין כמו דרינק של שישי בערב מתחת לאורות של תל אביב. 🥂\n\n#AIgenerated #virtualinfluencer #TelAviv #תלאביב #Florentin #streetstyle #nightout",
    "qc_ok": true,
    "qc_note": ""
   }

@@ -1,1 +1,31 @@
-null
+{
+ "stamp": "2026-11-20_1055",
+ "created_ts": 1795165164,
+ "options": [
+  {
+   "source": "generated",
+   "image": "state/pending/2026-11-20_1055_gen.jpg",
+   "post": {
+    "pillar": "food",
+    "scene": "Sitting at an outdoor table in Shuk HaCarmel eating fresh hummus after returning from New York",
+    "outfit": "Oversized vintage dark denim jacket over a plain white t-shirt, loose grey cargo pants, delicate gold necklace, small silver hoop earrings",
+    "image_scene_prompt": "A young woman seated at a small wooden street table in Shuk HaCarmel market in Tel Aviv, holding a piece of pita near a bowl of fresh hummus topped with chickpeas and olive oil. Autumn morning sunlight filtering through market canopies. Candid phone-photography style, natural light, slight warm film texture, cozy urban market setting with subtle background blur.",
+    "caption_en": "New York pizza had its moment, but nothing hits quite like a proper plate of hummus back home. 🧆",
+    "caption_he": "פיצה בניו יורק זה נחמד והכל, אבל שום דבר לא משתווה לחומוס אמיתי בשוק הכרמל. 🧆",
+    "hashtags": [
+     "#AIgenerated",
+     "#virtualinfluencer",
+     "#telaviv",
+     "#תלאביב",
+     "#shukhacarmel",
+     "#telavivfood"
+    ],
+    "image_prompt": "Sky, the same young woman as in the reference images: 24 years old, shoulder-length light honey-brown wavy hair (uniform color), light green eyes, straight dark natural eyebrows, soft rounded face, warm wide smile, many light freckles across nose, cheeks and forehead, warm Mediterranean skin, minimal makeup, small silver hoop earrings, thin delicate gold chain necklace. A young woman seated at a small wooden street table in Shuk HaCarmel market in Tel Aviv, holding a piece of pita near a bowl of fresh hummus topped with chickpeas and olive oil. Autumn morning sunlight filtering through market canopies. Candid phone-photography style, natural light, slight warm film texture, cozy urban market setting with subtle background blur. Outfit: Oversized vintage dark denim jacket over a plain white t-shirt, loose grey cargo pants, delicate gold necklace, small silver hoop earrings. Photorealistic candid photo that looks like a real phone or film photo, natural light, realistic skin texture, her face clearly visible and in focus (medium shot or closer). Clothing has no logos, no brand marks and no readable text. No real famous people. No official team crests."
+   },
+   "caption": "New York pizza had its moment, but nothing hits quite like a proper plate of hummus back home. 🧆\n\nפיצה בניו יורק זה נחמד והכל, אבל שום דבר לא משתווה לחומוס אמיתי בשוק הכרמל. 🧆\n\n#AIgenerated #virtualinfluencer #telaviv #תלאביב #shukhacarmel #telavivfood",
+   "qc_ok": true,
+   "qc_note": ""
+  }
+ ],
+ "extra_note": ""
+}

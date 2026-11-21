@@ -1,1 +1,32 @@
-null
+{
+ "stamp": "2026-11-21_1045",
+ "created_ts": 1795250905,
+ "options": [
+  {
+   "source": "generated",
+   "image": "state/pending/2026-11-21_1045_gen.jpg",
+   "post": {
+    "pillar": "fitness",
+    "scene": "Sky running along the Tel Aviv promenade on a sunny autumn morning",
+    "outfit": "a light grey sports bra, an open oversized black zip-up hoodie, black running shorts, and running shoes, with her light honey-brown hair tied back loosely and small silver hoop earrings",
+    "image_scene_prompt": "A candid shot of Sky running along the Tel Aviv boardwalk with the Mediterranean Sea and horizon in the background. Natural morning sunlight illuminating the scene, soft motion blur on the background, captured from a slightly low angle as if taken by a friend on a smartphone.",
+    "caption_en": "Ran 7km just to earn the right to complain about the Tel Aviv humidity. 🏃‍♀️",
+    "caption_he": "רצתי 7 ק\"מ רק כדי להרוויח את הזכות להתלונן על הלחות בתל אביב.",
+    "hashtags": [
+     "#AIgenerated",
+     "#virtualinfluencer",
+     "#fitness",
+     "#running",
+     "#telaviv",
+     "#תלאביב"
+    ],
+    "image_prompt": "Sky, the same young woman as in the reference images: 24 years old, shoulder-length light honey-brown wavy hair (uniform color), light green eyes, straight dark natural eyebrows, soft rounded face, warm wide smile, many light freckles across nose, cheeks and forehead, warm Mediterranean skin, minimal makeup, small silver hoop earrings, thin delicate gold chain necklace. A candid shot of Sky running along the Tel Aviv boardwalk with the Mediterranean Sea and horizon in the background. Natural morning sunlight illuminating the scene, soft motion blur on the background, captured from a slightly low angle as if taken by a friend on a smartphone. Outfit: a light grey sports bra, an open oversized black zip-up hoodie, black running shorts, and running shoes, with her light honey-brown hair tied back loosely and small silver hoop earrings. Photorealistic candid photo that looks like a real phone or film photo, natural light, realistic skin texture, her face clearly visible and in focus (medium shot or closer). Clothing has no logos, no brand marks and no readable text. No real famous people. No official team crests."
+   },
+   "caption": "Ran 7km just to earn the right to complain about the Tel Aviv humidity. 🏃‍♀️\n\nרצתי 7 ק\"מ רק כדי להרוויח את הזכות להתלונן על הלחות בתל אביב.\n\n#AIgenerated #virtualinfluencer #fitness #running #telaviv #תלאביב",
+   "qc_ok": true,
+   "qc_note": "",
+   "story_note": null
+  }
+ ],
+ "extra_note": ""
+}

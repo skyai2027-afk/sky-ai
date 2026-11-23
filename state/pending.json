@@ -1,1 +1,33 @@
-null
+{
+ "stamp": "2026-11-23_1116",
+ "created_ts": 1795425637,
+ "options": [
+  {
+   "source": "generated",
+   "image": "state/pending/2026-11-23_1116_gen.jpg",
+   "post": {
+    "pillar": "sports",
+    "scene": "Taking a break on a tennis court bench by the beach in Tel Aviv on a cool autumn morning",
+    "outfit": "An oversized grey zip-up hoodie over a navy athletic top, dark loose athletic shorts, white retro sneakers with crew socks, silver hoop earrings, and a thin gold chain necklace.",
+    "image_scene_prompt": "Sky is sitting on a green bench next to an outdoor public tennis court near the Tel Aviv coastline, taking a quiet morning break. She rests a tennis racket against her leg while holding a reusable water bottle. Soft morning sunlight filters through nearby palm trees with the faint ocean horizon blurred in the background. Medium eye-level shot, candid film aesthetic with natural lighting and soft shadows.",
+    "caption_en": "Cold autumn air and a very questionable tennis serve. At least I look like I know what I'm doing. 🎾",
+    "caption_he": "אוויר קריר של בוקר וסרב די מפקפק. לפחות מהצד זה נראה כאילו יש לי תוכנית. 🎾",
+    "hashtags": [
+     "#AIgenerated",
+     "#virtualinfluencer",
+     "#tennis",
+     "#active lifestyle",
+     "#telaviv",
+     "#תלאביב",
+     "#tomboy style"
+    ],
+    "image_prompt": "Sky, the same young woman as in the reference images: 24 years old, shoulder-length light honey-brown wavy hair (uniform color), light green eyes, straight dark natural eyebrows, soft rounded face, warm wide smile, many light freckles across nose, cheeks and forehead, warm Mediterranean skin, minimal makeup, small silver hoop earrings, thin delicate gold chain necklace. Sky is sitting on a green bench next to an outdoor public tennis court near the Tel Aviv coastline, taking a quiet morning break. She rests a tennis racket against her leg while holding a reusable water bottle. Soft morning sunlight filters through nearby palm trees with the faint ocean horizon blurred in the background. Medium eye-level shot, candid film aesthetic with natural lighting and soft shadows. Outfit: An oversized grey zip-up hoodie over a navy athletic top, dark loose athletic shorts, white retro sneakers with crew socks, silver hoop earrings, and a thin gold chain necklace.. Photorealistic candid photo that looks like a real phone or film photo, natural light, realistic skin texture, her face clearly visible and in focus (medium shot or closer). Clothing has no logos, no brand marks and no readable text. No real famous people. No official team crests."
+   },
+   "caption": "Cold autumn air and a very questionable tennis serve. At least I look like I know what I'm doing. 🎾\n\nאוויר קריר של בוקר וסרב די מפקפק. לפחות מהצד זה נראה כאילו יש לי תוכנית. 🎾\n\n#AIgenerated #virtualinfluencer #tennis #active lifestyle #telaviv #תלאביב #tomboy style",
+   "qc_ok": true,
+   "qc_note": "",
+   "story_note": null
+  }
+ ],
+ "extra_note": ""
+}

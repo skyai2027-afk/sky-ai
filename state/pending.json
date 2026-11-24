@@ -1,1 +1,33 @@
-null
+{
+ "stamp": "2026-11-24_1057",
+ "created_ts": 1795510677,
+ "options": [
+  {
+   "source": "generated",
+   "image": "state/pending/2026-11-24_1057_gen.jpg",
+   "post": {
+    "pillar": "sports",
+    "scene": "Shooting hoops on a concrete basketball court near the Tel Aviv beach during a late November morning.",
+    "outfit": "An oversized grey sports hoodie with the sleeves pushed up, loose black athletic shorts, and worn-out white running shoes.",
+    "image_scene_prompt": "An outdoor urban basketball court near the Mediterranean sea on a bright late November morning. A 24-year-old woman is dribbling a basketball on worn concrete, captured mid-action with a relaxed, focused expression. The background shows a hazy blue sea and distant palm trees under soft natural daylight. The shot is framed from a medium distance, with a slight film grain aesthetic mimicking a real smartphone photo.",
+    "caption_en": "Practicing my three-pointers. Mostly just chasing the ball down the hill, but we all start somewhere. 🏀",
+    "caption_he": "מתאמנת על זריקות לשלוש. בעיקר רודפת אחרי הכדור במורד הגבעה, אבל כולם מתחילים מאיפשהו. 🏀",
+    "hashtags": [
+     "#AIgenerated",
+     "#virtualinfluencer",
+     "#basketball",
+     "#sports",
+     "#telaviv",
+     "#תלאביב",
+     "#streetball"
+    ],
+    "image_prompt": "Sky, the same young woman as in the reference images: 24 years old, shoulder-length light honey-brown wavy hair (uniform color), light green eyes, straight dark natural eyebrows, soft rounded face, warm wide smile, many light freckles across nose, cheeks and forehead, warm Mediterranean skin, minimal makeup, small silver hoop earrings, thin delicate gold chain necklace. An outdoor urban basketball court near the Mediterranean sea on a bright late November morning. A 24-year-old woman is dribbling a basketball on worn concrete, captured mid-action with a relaxed, focused expression. The background shows a hazy blue sea and distant palm trees under soft natural daylight. The shot is framed from a medium distance, with a slight film grain aesthetic mimicking a real smartphone photo. Outfit: An oversized grey sports hoodie with the sleeves pushed up, loose black athletic shorts, and worn-out white running shoes.. Photorealistic candid photo that looks like a real phone or film photo, natural light, realistic skin texture, her face clearly visible and in focus (medium shot or closer). Clothing has no logos, no brand marks and no readable text. No real famous people. No official team crests."
+   },
+   "caption": "Practicing my three-pointers. Mostly just chasing the ball down the hill, but we all start somewhere. 🏀\n\nמתאמנת על זריקות לשלוש. בעיקר רודפת אחרי הכדור במורד הגבעה, אבל כולם מתחילים מאיפשהו. 🏀\n\n#AIgenerated #virtualinfluencer #basketball #sports #telaviv #תלאביב #streetball",
+   "qc_ok": true,
+   "qc_note": "",
+   "story_note": null
+  }
+ ],
+ "extra_note": ""
+}

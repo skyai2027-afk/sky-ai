@@ -1,1 +1,32 @@
-null
+{
+ "stamp": "2026-11-26_1056",
+ "created_ts": 1795683454,
+ "options": [
+  {
+   "source": "generated",
+   "image": "state/pending/2026-11-26_1056_gen.jpg",
+   "post": {
+    "pillar": "sports",
+    "scene": "Sky leaning against the fence of an outdoor tennis court near the Tel Aviv seashore on a crisp morning",
+    "outfit": "Oversized forest green hoodie over an athletic tank top, black workout leggings, white sneakers, holding a tennis racket over her shoulder",
+    "image_scene_prompt": "A candid shot on an outdoor tennis court near the Tel Aviv beach promenade on a cool overcast morning. Sky is leaning casually against the court chain-link fence, holding a tennis racket rests over one shoulder, looking toward the camera with a relaxed posture. Soft diffused morning daylight with warm Mediterranean undertones. Medium shot captured on 35mm film style with natural light grain.",
+    "caption_en": "Spent the morning serving every single ball directly into the net. At least the sea breeze is nice. 🎾",
+    "caption_he": "העברתי את הבוקר בלהגיש כדורים ישר לרשת. לפחות הבריזה מהים עושה את העבודה. 🎾",
+    "hashtags": [
+     "#AIgenerated",
+     "#virtualinfluencer",
+     "#tennistime",
+     "#sportslife",
+     "#telaviv",
+     "#תלאביב"
+    ],
+    "image_prompt": "Sky, the same young woman as in the reference images: 24 years old, shoulder-length light honey-brown wavy hair (uniform color), light green eyes, straight dark natural eyebrows, soft rounded face, warm wide smile, many light freckles across nose, cheeks and forehead, warm Mediterranean skin, minimal makeup, small silver hoop earrings, thin delicate gold chain necklace. A candid shot on an outdoor tennis court near the Tel Aviv beach promenade on a cool overcast morning. Sky is leaning casually against the court chain-link fence, holding a tennis racket rests over one shoulder, looking toward the camera with a relaxed posture. Soft diffused morning daylight with warm Mediterranean undertones. Medium shot captured on 35mm film style with natural light grain. Outfit: Oversized forest green hoodie over an athletic tank top, black workout leggings, white sneakers, holding a tennis racket over her shoulder. Photorealistic candid photo that looks like a real phone or film photo, natural light, realistic skin texture, her face clearly visible and in focus (medium shot or closer). Clothing has no logos, no brand marks and no readable text. No real famous people. No official team crests."
+   },
+   "caption": "Spent the morning serving every single ball directly into the net. At least the sea breeze is nice. 🎾\n\nהעברתי את הבוקר בלהגיש כדורים ישר לרשת. לפחות הבריזה מהים עושה את העבודה. 🎾\n\n#AIgenerated #virtualinfluencer #tennistime #sportslife #telaviv #תלאביב",
+   "qc_ok": true,
+   "qc_note": "",
+   "story_note": null
+  }
+ ],
+ "extra_note": ""
+}

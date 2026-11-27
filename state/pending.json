@@ -1,1 +1,33 @@
-null
+{
+ "stamp": "2026-11-27_1057",
+ "created_ts": 1795769899,
+ "options": [
+  {
+   "source": "generated",
+   "image": "state/pending/2026-11-27_1057_gen.jpg",
+   "post": {
+    "pillar": "sports",
+    "scene": "Sky shooting hoops on an outdoor neighborhood basketball court near the Tel Aviv coast on a Friday morning.",
+    "outfit": "Oversized charcoal grey hoodie, relaxed black track pants, white sneakers, and a backward black baseball cap.",
+    "image_scene_prompt": "Standing on a concrete outdoor basketball court near the sea in Tel Aviv under soft late-autumn morning sunlight. She is holding a classic orange basketball casually under one arm, standing in a relaxed pose with a subtle smile. Soft blue sky and blurred palm trees in the background. Captured with natural film grain, realistic light, medium shot at eye level.",
+    "caption_en": "Friday morning shootaround. My jumper needs work, but at least the ocean breeze is nice. 🏀",
+    "caption_he": "אימון קליעות של שישי בבוקר. הזריקה שלי צריכה עוד עבודה, אבל לפחות הבריזה מהים מושלמת. 🏀",
+    "hashtags": [
+     "#AIgenerated",
+     "#virtualinfluencer",
+     "#telaviv",
+     "#תלאביב",
+     "#streetbasketball",
+     "#fridayvibes",
+     "#hoops"
+    ],
+    "image_prompt": "Sky, the same young woman as in the reference images: 24 years old, shoulder-length light honey-brown wavy hair (uniform color), light green eyes, straight dark natural eyebrows, soft rounded face, warm wide smile, many light freckles across nose, cheeks and forehead, warm Mediterranean skin, minimal makeup, small silver hoop earrings, thin delicate gold chain necklace. Standing on a concrete outdoor basketball court near the sea in Tel Aviv under soft late-autumn morning sunlight. She is holding a classic orange basketball casually under one arm, standing in a relaxed pose with a subtle smile. Soft blue sky and blurred palm trees in the background. Captured with natural film grain, realistic light, medium shot at eye level. Outfit: Oversized charcoal grey hoodie, relaxed black track pants, white sneakers, and a backward black baseball cap.. Photorealistic candid photo that looks like a real phone or film photo, natural light, realistic skin texture, her face clearly visible and in focus (medium shot or closer). Clothing has no logos, no brand marks and no readable text. No real famous people. No official team crests."
+   },
+   "caption": "Friday morning shootaround. My jumper needs work, but at least the ocean breeze is nice. 🏀\n\nאימון קליעות של שישי בבוקר. הזריקה שלי צריכה עוד עבודה, אבל לפחות הבריזה מהים מושלמת. 🏀\n\n#AIgenerated #virtualinfluencer #telaviv #תלאביב #streetbasketball #fridayvibes #hoops",
+   "qc_ok": true,
+   "qc_note": "",
+   "story_note": null
+  }
+ ],
+ "extra_note": ""
+}

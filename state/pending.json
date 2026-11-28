@@ -1,1 +1,32 @@
-null
+{
+ "stamp": "2026-11-28_1045",
+ "created_ts": 1795855715,
+ "options": [
+  {
+   "source": "generated",
+   "image": "state/pending/2026-11-28_1045_gen.jpg",
+   "post": {
+    "pillar": "sports",
+    "scene": "Sky sitting on a bench tying her sneakers at a neighborhood outdoor basketball court in Tel Aviv on a sunny Saturday morning",
+    "outfit": "Oversized heather-grey hoodie over a dark sports top, loose black athletic track pants, backward black baseball cap, and retro white sneakers",
+    "image_scene_prompt": "An eye-level natural shot at a sunny outdoor neighborhood basketball court in Tel Aviv on a cool late-November morning. Sky is sitting on a wooden court bench, leaning forward to lace up her white retro sneakers while a basketball rests on the ground next to her foot. Golden morning sunlight creates soft shadows on the worn concrete floor, with blurry apartment balconies and urban greenery in the background. Candid film photo look with subtle grain and natural colors.",
+    "caption_en": "Saturday morning hoops. My jump shot is a work in progress, but my post-game coffee strategy is flawless. 🏀",
+    "caption_he": "כדורסל של שבת בבוקר. הג'אמפ שוט שלי עדיין בבנייה, אבל התכנון לקפה של אחרי האימון מושלם. 🏀",
+    "hashtags": [
+     "#AIgenerated",
+     "#virtualinfluencer",
+     "#streetball",
+     "#saturdayvibes",
+     "#telaviv",
+     "#תלאביב"
+    ],
+    "image_prompt": "Sky, the same young woman as in the reference images: 24 years old, shoulder-length light honey-brown wavy hair (uniform color), light green eyes, straight dark natural eyebrows, soft rounded face, warm wide smile, many light freckles across nose, cheeks and forehead, warm Mediterranean skin, minimal makeup, small silver hoop earrings, thin delicate gold chain necklace. An eye-level natural shot at a sunny outdoor neighborhood basketball court in Tel Aviv on a cool late-November morning. Sky is sitting on a wooden court bench, leaning forward to lace up her white retro sneakers while a basketball rests on the ground next to her foot. Golden morning sunlight creates soft shadows on the worn concrete floor, with blurry apartment balconies and urban greenery in the background. Candid film photo look with subtle grain and natural colors. Outfit: Oversized heather-grey hoodie over a dark sports top, loose black athletic track pants, backward black baseball cap, and retro white sneakers. Photorealistic candid photo that looks like a real phone or film photo, natural light, realistic skin texture, her face clearly visible and in focus (medium shot or closer). Clothing has no logos, no brand marks and no readable text. No real famous people. No official team crests."
+   },
+   "caption": "Saturday morning hoops. My jump shot is a work in progress, but my post-game coffee strategy is flawless. 🏀\n\nכדורסל של שבת בבוקר. הג'אמפ שוט שלי עדיין בבנייה, אבל התכנון לקפה של אחרי האימון מושלם. 🏀\n\n#AIgenerated #virtualinfluencer #streetball #saturdayvibes #telaviv #תלאביב",
+   "qc_ok": false,
+   "qc_note": "⚠️ לא עברה את בדיקת האיכות במלואה: Visible brand logo on footwear, Medium shot slightly reduces fine facial details",
+   "story_note": null
+  }
+ ],
+ "extra_note": ""
+}
